@@ -62,9 +62,8 @@ fmaData = FmaData(parserList[0], parserList[1], parserList[2], parserList[3],  p
 #print(fmaData.getAcceptState())
 #setting up window 
 root=Tk()
-myCanvas = tkinter.Canvas(root, bg="white", height=300, width=300)
-myCanvas.create_oval(15, 25, 200, 25)
-myCanvas.pack(fill=BOTH, expand=True)
+myCanvas = tkinter.Canvas(root, bg="white", height=900, width=900)
+
 
 class Transition:
     def __init__(self, transition):
@@ -133,9 +132,9 @@ stateList = createStatesList(fmaData.getAmountOfStates())
 stateList = placingData(transitionsList, stateList)
 
 #checking the values to make sure they're all there 
-for state in stateList:
-    for transition in state.getTransitions():
-        print(str(transition.getStart()) + " State:" + str(state.getState()) +" "+ str(transition.getFinish()))
+#for state in stateList:
+#    for transition in state.getTransitions():
+#        print(str(transition.getStart()) + " State:" + str(state.getState()) +" "+ str(transition.getFinish()))
 
 
 
@@ -149,9 +148,31 @@ for state in stateList:
 
 class DisplayFma:
     def __init__(self):
-        self.amountOfCircles = fmaData.getAmountOfStates
+        self.amountOfCircles = fmaData.getAmountOfStates()
+        #displayCircles()
 
-       # ttk.Button(root,text="Hello Universe").grid()        
+    def displayCircles(self):
+        i =0
+        x1 = 100+25
+        y1 = 120+50
+        x2 = 200
+        y2 = 250
+        offset = 150
+
+        myCanvas.pack()
+       # myCanvas.create_oval(x1, y1, 200, 100)
+       # myCanvas.create_oval(x1, y1+150, 200, 250)
+       # myCanvas.create_oval(x1, y1+150+150, 200, 250+150)
+        amount = int(self.amountOfCircles)
+
+
+        while i < amount:
+            myCanvas.create_oval(x1, y1, x2, y2)
+            myCanvas.create_text(x1+32, y1+40, anchor=W, font="pursia", text=str(i))
+            
+            y1 += offset
+            y2 += offset
+            i += 1
         
 
         
@@ -159,6 +180,7 @@ class DisplayFma:
     #def displayCircles():
 
 display = DisplayFma()
+display.displayCircles()
 
 root.mainloop()
 
