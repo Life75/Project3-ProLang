@@ -98,6 +98,15 @@ class State:
             self.transitions.append(transition)
     def getTransitions(self):
         return self.transitions
+    def setCoordinates(self, x1, x2, y1, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+    def getCoordinates(self):
+        self.coordinates = [self.x1, self.y1, self.x2, self.y2]
+        return self.coordinates
+
 
 
 #takes in all the transitions from the txt and returns a list of those transitions data types for extraction later by the function when the State classes are set up
@@ -140,12 +149,6 @@ stateList = placingData(transitionsList, stateList)
 
 
 
-
-
-
-
-
-
 class DisplayFma:
     def __init__(self):
         self.amountOfCircles = fmaData.getAmountOfStates()
@@ -164,15 +167,49 @@ class DisplayFma:
        # myCanvas.create_oval(x1, y1+150, 200, 250)
        # myCanvas.create_oval(x1, y1+150+150, 200, 250+150)
         amount = int(self.amountOfCircles)
-
-
+        self.hiddenCircles = []
         while i < amount:
-            myCanvas.create_oval(x1, y1, x2, y2)
+            circleID = myCanvas.create_oval(x1+30, y1, x2+30, y2, outline='#fff')
+           # print(str(circleID)+ "here")
+            self.hiddenCircles.append(circleID)
+            myCanvas.create_oval(x1, y1, x2, y2, fill="#fff")
             myCanvas.create_text(x1+32, y1+40, anchor=W, font="pursia", text=str(i))
+            stateList[i].setCoordinates(x1, y1, x2, y2)
             
             y1 += offset
             y2 += offset
             i += 1
+    
+    def displayTransitions(self):
+        #TODO display whatever transition lines 
+        currentState =0
+        for state in stateList:
+            transit = state.getTransitions()
+            currentState += 1 
+            #print(state.getState())
+
+            currentCoordinates = state.getCoordinates()
+            print(currentCoordinates)
+            for transition in transit:
+
+
+                start = int(transition.getStart())
+                finish = int(transition.getFinish())
+
+                #drawing a straight line for transition
+                if start == finish-1:
+                    myCanvas.create_line(currentCoordinates[0]+38,currentCoordinates[3], currentCoordinates[0]+38, currentCoordinates[3]+75, arrow=LAST)
+                    print(state.getState())
+                    myCanvas.itemconfigure(self.hiddenCircles[state.getState()], outline="#000000") #unhides the circles if they go into each other
+
+                #looping into itself 
+                #if start == finish:
+                    #myCanvas.create_arc(currentCoordinates[0], currentCoordinates[1], currentCoordinates[2]-150, currentCoordinates[3], style="arc")
+                    
+
+                    
+
+
         
 
         
@@ -181,6 +218,7 @@ class DisplayFma:
 
 display = DisplayFma()
 display.displayCircles()
+display.displayTransitions()
 
 root.mainloop()
 
