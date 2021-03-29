@@ -199,13 +199,32 @@ class DisplayFma:
                 #drawing a straight line for transition
                 if start == finish-1:
                     myCanvas.create_line(currentCoordinates[0]+38,currentCoordinates[3], currentCoordinates[0]+38, currentCoordinates[3]+75, arrow=LAST)
-                    print(state.getState())
-                    myCanvas.itemconfigure(self.hiddenCircles[state.getState()], outline="#000000") #unhides the circles if they go into each other
-
+                    key = transition.getKey()
+                    myCanvas.create_text(currentCoordinates[0]+50, currentCoordinates[3]+20, anchor=W, font="pursia", text=str(key))                    
+            
                 #looping into itself 
-                #if start == finish:
-                    #myCanvas.create_arc(currentCoordinates[0], currentCoordinates[1], currentCoordinates[2]-150, currentCoordinates[3], style="arc")
-                    
+                if start == finish:
+                    myCanvas.itemconfigure(self.hiddenCircles[state.getState()], outline="#000000") #unhides the circles if they go into each other
+                    key = transition.getKey()
+                    #print(key + " key here")
+                    myCanvas.create_text(currentCoordinates[0]+120, currentCoordinates[3]-50, anchor=W, font="pursia", text=str(key))
+
+                    #print(transition.getKey())
+
+                #if transition is going backwards 
+                if start > finish:
+                    myCanvas.create_line(currentCoordinates[0], currentCoordinates[3]-30, currentCoordinates[0]-50, currentCoordinates[3]-30) #horiztonal from the start
+                    endingState = stateList[finish]
+                    endingCoordinates = endingState.getCoordinates()
+                    myCanvas.create_line(currentCoordinates[0]-50, currentCoordinates[3]-30, currentCoordinates[0]-50, endingCoordinates[2]+30) #line goes to the length of wherever its destination is
+
+                    #create the line that goes down from given line 
+                    myCanvas.create_line(endingCoordinates[0], endingCoordinates[3]-50, endingCoordinates[0]-50, endingCoordinates[3]-50, arrow=FIRST )
+                    #create the key 
+                    key = transition.getKey()
+                    myCanvas.create_text(endingCoordinates[0]-20, endingCoordinates[3], anchor=W, font="pursia", text=str(key))
+
+                # difference = finish - start , if difference > 1 then do the line going up and over past the other states, also TODO other accept states and start line state drawn
 
                     
 
