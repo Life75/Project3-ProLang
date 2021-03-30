@@ -242,20 +242,66 @@ class DisplayFma:
            # myCanvas.create_oval(currentCoordinates[0], currentCoordinates[1], currentCoordinates[0], currentCoordinates[3]-150)                
                
                     
+def checkIfLegalValue(element):
+    for value in fmaData.getAlphabet():
+        if value == element:
+            return True
+    return False
 
+def checkLegalTransistors(currentState, element):
+    transitions = currentState.getTransitions()
 
-def fmaLogic():
+    for path in transitions:
+        print(path.getKey())
+        if(path.getKey() == element):
+            nextState = int(path.getFinish())
+            return nextState
+    return -1
+
+def checkLegalAcceptState(currentState):
+    
+    for acceptState in fmaData.getAcceptState():
+        if int(currentState.getState()) == int(acceptState):
+            return True
+    return False   
+
+def fmaLogic(fileName):
     #parser.parseData('')TODO Work on the the lgic 
+    fmaLogicParser = Parser(fileName)
+    string = fmaLogicParser.parseData()
+
+    currentState = stateList[int(fmaData.getStartState())]
+    for i, element in enumerate(string[0]):
+        if checkIfLegalValue(element):
+            nextState = checkLegalTransistors(currentState, element)
+            if nextState != -1:
+                currentState =  stateList[nextState]
+            else:
+                return False
+    if  checkLegalAcceptState(currentState):
+        return True
+    else:
+        return False
+
+        
+
+
 
 
         
     
     #def displayCircles():
 
+
+
 display = DisplayFma()
 display.displayCircles()
 display.displayTransitions()
 display.startStateDisplay()
+if fmaLogic('legalInput.in'):
+    print("legal statement")
+else:
+    print("illegal statement")
 
 
 
