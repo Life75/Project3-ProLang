@@ -106,6 +106,8 @@ class State:
     def getCoordinates(self):
         self.coordinates = [self.x1, self.y1, self.x2, self.y2]
         return self.coordinates
+    
+        
 
 
 
@@ -173,6 +175,10 @@ class DisplayFma:
            # print(str(circleID)+ "here")
             self.hiddenCircles.append(circleID)
             myCanvas.create_oval(x1, y1, x2, y2, fill="#fff")
+            for acceptState in fmaData.getAcceptState():
+                if i == int(acceptState):
+                    myCanvas.create_oval(x1+10,y1+15,x2-10,y2-12)
+
             myCanvas.create_text(x1+32, y1+40, anchor=W, font="pursia", text=str(i))
             stateList[i].setCoordinates(x1, y1, x2, y2)
             
@@ -189,7 +195,7 @@ class DisplayFma:
             #print(state.getState())
 
             currentCoordinates = state.getCoordinates()
-            print(currentCoordinates)
+            #print(currentCoordinates)
             for transition in transit:
 
 
@@ -212,7 +218,8 @@ class DisplayFma:
                     #print(transition.getKey())
 
                 #if transition is going backwards 
-                if start > finish:
+                diff = finish - start 
+                if start > finish or diff > 1:
                     myCanvas.create_line(currentCoordinates[0], currentCoordinates[3]-30, currentCoordinates[0]-50, currentCoordinates[3]-30) #horiztonal from the start
                     endingState = stateList[finish]
                     endingCoordinates = endingState.getCoordinates()
@@ -225,11 +232,21 @@ class DisplayFma:
                     myCanvas.create_text(endingCoordinates[0]-20, endingCoordinates[3], anchor=W, font="pursia", text=str(key))
 
                 # difference = finish - start , if difference > 1 then do the line going up and over past the other states, also TODO other accept states and start line state drawn
+    def startStateDisplay(self):
+        state = stateList[int(fmaData.getStartState())]
+        currentCoordinates = state.getCoordinates()
+        myCanvas.create_line(currentCoordinates[0], currentCoordinates[3]-50, currentCoordinates[0]-40, currentCoordinates[3]-100, arrow=FIRST)
 
+    
+
+           # myCanvas.create_oval(currentCoordinates[0], currentCoordinates[1], currentCoordinates[0], currentCoordinates[3]-150)                
+               
                     
 
 
-        
+def fmaLogic():
+    #parser.parseData('')TODO Work on the the lgic 
+
 
         
     
@@ -238,6 +255,9 @@ class DisplayFma:
 display = DisplayFma()
 display.displayCircles()
 display.displayTransitions()
+display.startStateDisplay()
+
+
 
 root.mainloop()
 
