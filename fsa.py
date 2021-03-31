@@ -5,14 +5,18 @@ from tkinter import *
 from tkinter import ttk
 
 
+fileName = sys.argv[1]
+stringFileName = sys.argv[2]
 
+print(fileName)
+print(stringFileName)
 class FmaData:
     def __init__(self, amountOfStates, alphabet, stateTransisitions, startState, acceptStates):
-        self.amountOfStates = amountOfStates
-        self.alphabet = alphabet
-        self.stateTransisitions = stateTransisitions
-        self.startState = startState
-        self.acceptStates = acceptStates
+        self.amountOfStates = amountOfStates.strip()
+        self.alphabet = alphabet.strip()
+        self.stateTransisitions = stateTransisitions.strip()
+        self.startState = startState.strip()
+        self.acceptStates = acceptStates.strip()
     
     def getAmountOfStates(self):
         return self.amountOfStates
@@ -37,29 +41,22 @@ class Parser:
         self.fileName = fileName
 
     def parseData(self):
-        print(self.fileName)
         currentFile = open(self.fileName,"r+")
         data = currentFile.readline()
 
         parserList = data.split(';')
         return parserList
-        #print(parserList[1])
     
 
 
         
 
 #Parse the data and create the different transitions states with thier connected pathways 
-parser = Parser('test.txt')
+parser = Parser(fileName)
 parserList = parser.parseData() 
 
 fmaData = FmaData(parserList[0], parserList[1], parserList[2], parserList[3],  parserList[4])
 
-#print(fmaData.getAmountOfStates())
-#print(fmaData.getAlphabet())
-#print(fmaData.getStateTransitions())
-#print(fmaData.getStartState())
-#print(fmaData.getAcceptState())
 #setting up window 
 root=Tk()
 myCanvas = tkinter.Canvas(root, bg="white", height=900, width=900)
@@ -91,8 +88,6 @@ class State:
     def getState(self):
         return self.state
     def placeTransition(self, transition):
-        #TODO make a list to hold the transitions that pertain to this state
-        #print(transition.getStart())
         start = transition.getStart()
         if int(start) == self.state:
             self.transitions.append(transition)
@@ -132,7 +127,6 @@ def createStatesList(amountOfStates):
 def placingData(transitionsList, stateList):
     for state in stateList:
         for transition in transitionsList:
-            #print("here")
             state.placeTransition(transition)
     return stateList
 
@@ -142,19 +136,10 @@ transitionsList = createTransitions(fmaData.getStateTransitions())
 stateList = createStatesList(fmaData.getAmountOfStates())
 stateList = placingData(transitionsList, stateList)
 
-#checking the values to make sure they're all there 
-#for state in stateList:
-#    for transition in state.getTransitions():
-#        print(str(transition.getStart()) + " State:" + str(state.getState()) +" "+ str(transition.getFinish()))
-
-
-
-
 
 class DisplayFma:
     def __init__(self):
         self.amountOfCircles = fmaData.getAmountOfStates()
-        #displayCircles()
 
     def displayCircles(self):
         i =0
@@ -165,14 +150,12 @@ class DisplayFma:
         offset = 150
 
         myCanvas.pack()
-       # myCanvas.create_oval(x1, y1, 200, 100)
-       # myCanvas.create_oval(x1, y1+150, 200, 250)
-       # myCanvas.create_oval(x1, y1+150+150, 200, 250+150)
+      
         amount = int(self.amountOfCircles)
         self.hiddenCircles = []
         while i < amount:
             circleID = myCanvas.create_oval(x1+30, y1, x2+30, y2, outline='#fff')
-           # print(str(circleID)+ "here")
+           
             self.hiddenCircles.append(circleID)
             myCanvas.create_oval(x1, y1, x2, y2, fill="#fff")
             for acceptState in fmaData.getAcceptState():
@@ -187,15 +170,12 @@ class DisplayFma:
             i += 1
     
     def displayTransitions(self):
-        #TODO display whatever transition lines 
         currentState =0
         for state in stateList:
             transit = state.getTransitions()
             currentState += 1 
-            #print(state.getState())
 
             currentCoordinates = state.getCoordinates()
-            #print(currentCoordinates)
             for transition in transit:
 
 
@@ -212,10 +192,8 @@ class DisplayFma:
                 if start == finish:
                     myCanvas.itemconfigure(self.hiddenCircles[state.getState()], outline="#000000") #unhides the circles if they go into each other
                     key = transition.getKey()
-                    #print(key + " key here")
                     myCanvas.create_text(currentCoordinates[0]+120, currentCoordinates[3]-50, anchor=W, font="pursia", text=str(key))
 
-                    #print(transition.getKey())
 
                 #if transition is going backwards 
                 diff = finish - start 
@@ -231,7 +209,7 @@ class DisplayFma:
                     key = transition.getKey()
                     myCanvas.create_text(endingCoordinates[0]-20, endingCoordinates[3], anchor=W, font="pursia", text=str(key))
 
-                # difference = finish - start , if difference > 1 then do the line going up and over past the other states, also TODO other accept states and start line state drawn
+                
     def startStateDisplay(self):
         state = stateList[int(fmaData.getStartState())]
         currentCoordinates = state.getCoordinates()
@@ -239,7 +217,7 @@ class DisplayFma:
 
     
 
-           # myCanvas.create_oval(currentCoordinates[0], currentCoordinates[1], currentCoordinates[0], currentCoordinates[3]-150)                
+               
                
                     
 def checkIfLegalValue(element):
@@ -252,7 +230,6 @@ def checkLegalTransistors(currentState, element):
     transitions = currentState.getTransitions()
 
     for path in transitions:
-        print(path.getKey())
         if(path.getKey() == element):
             nextState = int(path.getFinish())
             return nextState
@@ -266,7 +243,6 @@ def checkLegalAcceptState(currentState):
     return False   
 
 def fmaLogic(fileName):
-    #parser.parseData('')TODO Work on the the lgic 
     fmaLogicParser = Parser(fileName)
     string = fmaLogicParser.parseData()
 
@@ -283,22 +259,11 @@ def fmaLogic(fileName):
     else:
         return False
 
-        
-
-
-
-
-        
-    
-    #def displayCircles():
-
-
-
 display = DisplayFma()
 display.displayCircles()
 display.displayTransitions()
 display.startStateDisplay()
-if fmaLogic('legalInput.in'):
+if fmaLogic(stringFileName):
     print("legal statement")
 else:
     print("illegal statement")
