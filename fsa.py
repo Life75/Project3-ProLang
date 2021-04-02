@@ -1,6 +1,7 @@
 import sys
 #TODO PARSE ARGUMENTS FOR FILEREADING INPUT AT THE END 
 import tkinter
+import time
 from tkinter import *
 from tkinter import ttk
 
@@ -101,6 +102,10 @@ class State:
     def getCoordinates(self):
         self.coordinates = [self.x1, self.y1, self.x2, self.y2]
         return self.coordinates
+    def setID(self, ID):
+        self.ID = ID
+    def getID(self):
+        return self.ID
     
         
 
@@ -155,9 +160,12 @@ class DisplayFma:
         self.hiddenCircles = []
         while i < amount:
             circleID = myCanvas.create_oval(x1+30, y1, x2+30, y2, outline='#fff')
-           
+
             self.hiddenCircles.append(circleID)
-            myCanvas.create_oval(x1, y1, x2, y2, fill="#fff")
+            circleID = myCanvas.create_oval(x1, y1, x2, y2, fill="#fff")
+            stateList[i].setID(circleID)
+
+            
             for acceptState in fmaData.getAcceptState():
                 if i == int(acceptState):
                     myCanvas.create_oval(x1+10,y1+15,x2-10,y2-12)
@@ -242,6 +250,17 @@ def checkLegalAcceptState(currentState):
             return True
     return False   
 
+def stateActiveColor(currentState):
+    myCanvas.itemconfigure(currentState.getID(), outline="#ffa500") 
+    myCanvas.update()
+    time.sleep(.5)
+    myCanvas.itemconfigure(currentState.getID(), outline="#000000") 
+    myCanvas.update()
+
+
+
+
+
 def fmaLogic(fileName):
     fmaLogicParser = Parser(fileName)
     string = fmaLogicParser.parseData()
@@ -249,12 +268,15 @@ def fmaLogic(fileName):
     currentState = stateList[int(fmaData.getStartState())]
     for i, element in enumerate(string[0]):
         if checkIfLegalValue(element):
+            stateActiveColor(currentState) 
             nextState = checkLegalTransistors(currentState, element)
+            #TODO change colors depending on the different tranisitions of states as if its going through the fma
             if nextState != -1:
                 currentState =  stateList[nextState]
             else:
                 return False
     if  checkLegalAcceptState(currentState):
+        stateActiveColor(currentState)
         return True
     else:
         return False
