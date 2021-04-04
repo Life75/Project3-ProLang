@@ -1,5 +1,4 @@
 import sys
-#TODO PARSE ARGUMENTS FOR FILEREADING INPUT AT THE END 
 import tkinter
 import time
 from tkinter import *
@@ -9,8 +8,7 @@ from tkinter import ttk
 fileName = sys.argv[1]
 stringFileName = sys.argv[2]
 
-print(fileName)
-print(stringFileName)
+#Parses the fma data 
 class FmaData:
     def __init__(self, amountOfStates, alphabet, stateTransisitions, startState, acceptStates):
         self.amountOfStates = amountOfStates.strip()
@@ -36,7 +34,7 @@ class FmaData:
     def getAcceptState(self):
         acceptStateList = self.acceptStates.split(',')
         return acceptStateList
-
+#Parses the files 
 class Parser:
     def __init__(self, fileName):
         self.fileName = fileName
@@ -65,7 +63,7 @@ scroll = Scrollbar(root, orient='vertical')
 scroll.pack(side= RIGHT, fill = Y)
 
 
-
+#The transitions that are attached to the different states 
 class Transition:
     def __init__(self, transition):
         self.transition = transition
@@ -84,7 +82,7 @@ class Transition:
         return self.finish
     def getKey(self):
         return self.key
-
+#The different states for the given inputs 
 class State: 
     def __init__(self, stateID):
         self.state = stateID
@@ -144,7 +142,7 @@ transitionsList = createTransitions(fmaData.getStateTransitions())
 stateList = createStatesList(fmaData.getAmountOfStates())
 stateList = placingData(transitionsList, stateList)
 
-
+#displays the lines and circles for the fsa 
 class DisplayFma:
     def __init__(self):
         self.amountOfCircles = fmaData.getAmountOfStates()
@@ -263,7 +261,7 @@ def stateActiveColor(currentState):
 
 
 
-
+#  Contains the actual logic of an fsa and goes through given the input 
 def fmaLogic(fileName):
     fmaLogicParser = Parser(fileName)
     string = fmaLogicParser.parseData()
@@ -273,7 +271,6 @@ def fmaLogic(fileName):
         if checkIfLegalValue(element):
             stateActiveColor(currentState) 
             nextState = checkLegalTransistors(currentState, element)
-            #TODO change colors depending on the different tranisitions of states as if its going through the fma
             if nextState != -1:
                 currentState =  stateList[nextState]
             else:
