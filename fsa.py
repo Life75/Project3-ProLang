@@ -61,6 +61,9 @@ fmaData = FmaData(parserList[0], parserList[1], parserList[2], parserList[3],  p
 #setting up window 
 root=Tk()
 myCanvas = tkinter.Canvas(root, bg="white", height=900, width=900)
+scroll = Scrollbar(root, orient='vertical')
+scroll.pack(side= RIGHT, fill = Y)
+
 
 
 class Transition:
