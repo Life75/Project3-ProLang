@@ -1,1 +1,1 @@
-# Project3-ProLang
+Generates a finite state automata given correct input statements. This will not only draw the diagram, but also displays and animation for the user to see the finite state automata through its progression.
